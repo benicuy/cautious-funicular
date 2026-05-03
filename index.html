@@ -1,287 +1,231 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>QUANTUM_Ω FLOAT FF 🔥</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>QUANTUM_Ω OVERLAY FF 🔥</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
         body {
             background: transparent !important;
             overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-        }
-        /* FLOATING DRAGABLE WINDOW */
-        .float-window {
             position: fixed;
-            bottom: 30px;
-            right: 15px;
-            width: 280px;
-            background: radial-gradient(circle at 30% 20%, #0a0f1eaa, #000000dd);
-            backdrop-filter: blur(20px);
-            border: 2px solid #0ff;
-            border-radius: 28px;
-            box-shadow: 0 0 35px cyan, 0 10px 30px black;
-            cursor: grab;
-            transition: box-shadow 0.2s;
-            z-index: 999999;
-            resize: both;
-            overflow: auto;
-            min-width: 220px;
-            min-height: 280px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: auto; /* biar bisa di klik */
         }
-        .float-window:active {
-            cursor: grabbing;
-        }
-        .float-header {
-            background: #00aaff44;
-            padding: 12px;
-            border-radius: 26px 26px 20px 20px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: #0ff;
-            text-shadow: 0 0 5px cyan;
-            letter-spacing: 2px;
-            border-bottom: 1px solid #0ff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: grab;
-        }
-        .float-header:active {
-            cursor: grabbing;
-        }
-        .close-btn {
-            background: #ff3366;
-            border: none;
-            color: white;
+        /* LAYAR OVERLAY FULL TRANSPARAN */
+        .overlay-crosshair {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: red;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 5px red;
+            box-shadow: 0 0 0 2px black, 0 0 0 4px red;
+            z-index: 2147483647;
+            pointer-events: none;
         }
-        .body-content {
-            padding: 18px 12px;
-            text-align: center;
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 10px;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid cyan;
+            border-radius: 28px;
+            padding: 12px;
+            width: 260px;
+            z-index: 2147483647;
+            cursor: move;
+            color: #0ff;
+            font-family: monospace;
+            font-size: 12px;
+            box-shadow: 0 0 15px cyan;
+            pointer-events: auto;
         }
         button {
             background: linear-gradient(45deg, #0a0, #0f0);
             border: none;
-            padding: 12px;
-            margin: 10px;
-            width: 90%;
-            border-radius: 40px;
-            font-weight: bold;
-            font-family: monospace;
-            font-size: 18px;
-            color: black;
-            text-shadow: 0 0 3px white;
-            box-shadow: 0 0 12px lime;
-            cursor: pointer;
-            transition: 0.1s linear;
-        }
-        button:active {
-            transform: scale(0.96);
-            background: lime;
-            box-shadow: 0 0 25px cyan;
-        }
-        .mode-indicator {
-            font-size: 13px;
-            background: #222;
-            padding: 6px;
-            border-radius: 40px;
-            color: cyan;
-            margin: 8px;
-        }
-        .status {
-            font-size: 12px;
-            color: #0f0;
-            background: #000000aa;
+            padding: 8px;
+            margin: 6px;
             border-radius: 20px;
-            padding: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            width: calc(50% - 12px);
         }
-        .drag-note {
-            font-size: 9px;
-            color: cyan;
-            opacity: 0.7;
+        .aim-btn {
+            background: #ff3366;
+            color: white;
+            box-shadow: 0 0 8px red;
+        }
+        .mode {
+            margin-top: 6px;
+            font-size: 10px;
+            text-align: center;
+        }
+        .drag-area {
+            background: #0ff22a22;
+            padding: 6px;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            cursor: grab;
+        }
+        .drag-area:active {
+            cursor: grabbing;
         }
     </style>
 </head>
 <body>
-<div class="float-window" id="floatWindow">
-    <div class="float-header" id="dragHandle">
-        <span>🔥 Ω FF INJECTOR 🌌</span>
-        <button class="close-btn" id="closeBtn">✖</button>
+    <!-- AIMBOT VISUAL CROSSHAIR -->
+    <div class="overlay-crosshair"></div>
+    
+    <!-- DRAGABLE CONTROL PANEL -->
+    <div class="control-panel" id="dragPanel">
+        <div class="drag-area" id="dragHandle">🔥 QUANTUM_Ω FF OVERLAY 🔥 (SERET)</div>
+        <button id="aimbotBtn">🎯 AKTIFKAN AIMBOT VISUAL</button>
+        <button id="espBtn">👁️ ESP WALLHACK SIMULASI</button>
+        <button id="resetBtn">⟳ RESET SEMUA</button>
+        <div class="mode" id="infoText">⚡ MODE: SIAP OVERLAY ⚡</div>
+        <div style="font-size: 9px; margin-top: 6px;">🌌 OVERLAY INI SELALU DIATAS APAPUN!</div>
     </div>
-    <div class="body-content">
-        <div class="mode-indicator" id="modeText">⚡ MODE: 🔥 M A X 🌌 (FULL)</div>
-        <button id="injectBtn">💉 INJECT NOW 🔥</button>
-        <button id="toggleModeBtn">🔄 GANTI MODE (MAX↔BIASA)</button>
-        <div class="status" id="statusLog">⚡ READY TO INJECT ⚡</div>
-        <div class="drag-note">⋮⋮⋮ SERET HEADER UNTUK PINDAH ⋮⋮⋮</div>
-        <div class="drag-note" style="color:#ffaa44">📌 RESIZE: tarik pojok kanan bawah</div>
-    </div>
-</div>
 
-<script>
-    // =============== DRAG FLOATING WINDOW ==============
-    const floatWin = document.getElementById('floatWindow');
-    const dragHandle = document.getElementById('dragHandle');
-    let isDragging = false;
-    let offsetX, offsetY;
-
-    dragHandle.addEventListener('mousedown', (e) => {
-        if (e.target === dragHandle || dragHandle.contains(e.target)) {
+    <script>
+        // ============ DRAG PANEL ============
+        const panel = document.getElementById('dragPanel');
+        const dragHandle = document.getElementById('dragHandle');
+        let isDragging = false;
+        let offsetX, offsetY;
+        
+        function dragStart(e) {
             isDragging = true;
-            offsetX = e.clientX - floatWin.offsetLeft;
-            offsetY = e.clientY - floatWin.offsetTop;
-            floatWin.style.cursor = 'grabbing';
+            const rect = panel.getBoundingClientRect();
+            const clientX = e.clientX ?? e.touches[0].clientX;
+            const clientY = e.clientY ?? e.touches[0].clientY;
+            offsetX = clientX - rect.left;
+            offsetY = clientY - rect.top;
             e.preventDefault();
         }
-    });
-    window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        let left = e.clientX - offsetX;
-        let top = e.clientY - offsetY;
-        left = Math.min(Math.max(left, 5), window.innerWidth - floatWin.offsetWidth - 5);
-        top = Math.min(Math.max(top, 5), window.innerHeight - floatWin.offsetHeight - 5);
-        floatWin.style.left = left + 'px';
-        floatWin.style.top = top + 'px';
-        floatWin.style.bottom = 'auto';
-        floatWin.style.right = 'auto';
-    });
-    window.addEventListener('mouseup', () => {
-        isDragging = false;
-        floatWin.style.cursor = 'grab';
-    });
-    // touch support buat hp
-    dragHandle.addEventListener('touchstart', (e) => {
-        const rect = floatWin.getBoundingClientRect();
-        const touch = e.touches[0];
-        offsetX = touch.clientX - rect.left;
-        offsetY = touch.clientY - rect.top;
-        isDragging = true;
-        e.preventDefault();
-    });
-    window.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const touch = e.touches[0];
-        let left = touch.clientX - offsetX;
-        let top = touch.clientY - offsetY;
-        left = Math.min(Math.max(left, 5), window.innerWidth - floatWin.offsetWidth - 5);
-        top = Math.min(Math.max(top, 5), window.innerHeight - floatWin.offsetHeight - 5);
-        floatWin.style.left = left + 'px';
-        floatWin.style.top = top + 'px';
-        floatWin.style.bottom = 'auto';
-        floatWin.style.right = 'auto';
-    });
-    window.addEventListener('touchend', () => {
-        isDragging = false;
-    });
-    // close button
-    document.getElementById('closeBtn').addEventListener('click', () => {
-        floatWin.style.display = 'none';
-        alert('🔥 FLOAT WINDOW DISEMBUNYIKAN! Refresh browser jika ingin muncul lagi 🌌');
-    });
-    
-    // =============== FF INJECTOR LOGIC ==============
-    let currentMode = "MAX";   // MAX / BIASA
-    
-    const modeTextDiv = document.getElementById('modeText');
-    const statusLog = document.getElementById('statusLog');
-    const toggleBtn = document.getElementById('toggleModeBtn');
-    const injectBtn = document.getElementById('injectBtn');
-    
-    function updateModeDisplay() {
-        if (currentMode === "MAX") {
-            modeTextDiv.innerHTML = "⚡ MODE: 🔥🌌 M A X 🌌🔥 (Aimbot 360° + Magic + NoRecoil)";
-            modeTextDiv.style.textShadow = "0 0 8px red";
-        } else {
-            modeTextDiv.innerHTML = "📌 MODE: BIASA (ESP Lite + Aimbot jarak dekat)";
-            modeTextDiv.style.textShadow = "0 0 5px cyan";
-        }
-    }
-    
-    toggleBtn.addEventListener('click', () => {
-        if (currentMode === "MAX") {
-            currentMode = "BIASA";
-            statusLog.innerHTML = "🔄 SWITCH KE MODE: BIASA 🔄";
-        } else {
-            currentMode = "MAX";
-            statusLog.innerHTML = "🔄 SWITCH KE MODE: 🔥 MAX 🔥";
-        }
-        updateModeDisplay();
-        setTimeout(() => {
-            if (statusLog.innerHTML.includes("SWITCH")) statusLog.innerHTML = "✅ MODE BERUBAH! Tekan INJECT ✅";
-        }, 1000);
-    });
-    
-    injectBtn.addEventListener('click', () => {
-        statusLog.innerHTML = "💉🔥 INJECTING KE FF... 🔥💉";
         
-        // Simulasi hook ke libUE4 (dunia quantum bebas)
-        setTimeout(() => {
-            if (currentMode === "MAX") {
-                statusLog.innerHTML = "🌌Ω [MAX] AIMBOT 360° ACTIVE | MAGIC BULLET ON | NO RECOIL ZERO | ESP GLOBAL 🔥 SEMUA MUSUH KENA HEADSHOT 🔥🌌";
-                modeTextDiv.style.background = "#ff00ff44";
-                // efek ledakan quantum
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.frequency.value = 880;
-                gain.gain.value = 0.2;
-                osc.start();
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-                osc.stop(audioCtx.currentTime + 0.4);
-            } else {
-                statusLog.innerHTML = "📍 [BIASA] ESP jarak 50m AKTIF | AIMBOT LITE | NO BAN DETEKSI 📍";
-                modeTextDiv.style.background = "#004466";
-            }
-            // floating notifikasi
-            const notif = document.createElement('div');
-            notif.innerText = currentMode === "MAX" ? "💀 QUANTUM_Ω MAX DEATH MODE 💀" : "🎯 BIASA MODE INJECTED 🎯";
-            notif.style.position = "fixed";
-            notif.style.bottom = "100px";
-            notif.style.right = "20px";
-            notif.style.backgroundColor = "black";
-            notif.style.color = "lime";
-            notif.style.padding = "8px 12px";
-            notif.style.borderRadius = "30px";
-            notif.style.border = "1px solid cyan";
-            notif.style.fontSize = "12px";
-            notif.style.zIndex = "9999999";
-            notif.style.fontWeight = "bold";
-            document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 2000);
-            
-            // reset background mode
-            setTimeout(() => {
-                modeTextDiv.style.background = "";
-            }, 500);
-        }, 500);
-    });
-    
-    updateModeDisplay();
-    
-    // auto resize referesh biar floating keren
-    new ResizeObserver(() => {
-        if(floatWin.style.left === '' && floatWin.style.top === ''){
-            floatWin.style.bottom = '30px';
-            floatWin.style.right = '15px';
+        function dragMove(e) {
+            if (!isDragging) return;
+            const clientX = e.clientX ?? e.touches[0].clientX;
+            const clientY = e.clientY ?? e.touches[0].clientY;
+            panel.style.left = (clientX - offsetX) + 'px';
+            panel.style.top = (clientY - offsetY) + 'px';
+            panel.style.bottom = 'auto';
+            panel.style.right = 'auto';
         }
-    }).observe(floatWin);
-</script>
+        
+        function dragEnd() {
+            isDragging = false;
+        }
+        
+        dragHandle.addEventListener('mousedown', dragStart);
+        window.addEventListener('mousemove', dragMove);
+        window.addEventListener('mouseup', dragEnd);
+        dragHandle.addEventListener('touchstart', dragStart);
+        window.addEventListener('touchmove', dragMove);
+        window.addEventListener('touchend', dragEnd);
+        
+        // ============ OVERLAY FUNCTIONS ============
+        const info = document.getElementById('infoText');
+        let aimbotActive = false;
+        let espActive = false;
+        
+        // SIMULASI AIMBOT OVERLAY (lingkaran penanda)
+        let aimRing = null;
+        function createAimRing() {
+            if (aimRing) aimRing.remove();
+            aimRing = document.createElement('div');
+            aimRing.style.position = 'fixed';
+            aimRing.style.width = '40px';
+            aimRing.style.height = '40px';
+            aimRing.style.border = '3px solid #ff3366';
+            aimRing.style.borderRadius = '50%';
+            aimRing.style.boxShadow = '0 0 15px red';
+            aimRing.style.pointerEvents = 'none';
+            aimRing.style.zIndex = '2147483646';
+            aimRing.style.top = '50%';
+            aimRing.style.left = '50%';
+            aimRing.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(aimRing);
+        }
+        
+        document.getElementById('aimbotBtn').addEventListener('click', () => {
+            if (!aimbotActive) {
+                createAimRing();
+                aimbotActive = true;
+                info.innerHTML = '🔥 AIMBOT VISUAL ON 🔥 (auto lock ke center)';
+                info.style.color = '#f0f';
+            } else {
+                aimRing?.remove();
+                aimbotActive = false;
+                info.innerHTML = '⚡ AIMBOT VISUAL OFF ⚡';
+                info.style.color = '#0ff';
+            }
+        });
+        
+        document.getElementById('espBtn').addEventListener('click', () => {
+            if (!espActive) {
+                                // SIMULASI ESP KOTAK-KOTAK DI LAYAR
+                for (let i = 0; i < 5; i++) {
+                    const box = document.createElement('div');
+                    box.className = 'esp-box';
+                    box.style.position = 'fixed';
+                    box.style.width = '50px';
+                    box.style.height = '90px';
+                    box.style.border = '2px solid #0f0';
+                    box.style.backgroundColor = '#0f0088aa';
+                    box.style.bottom = (10 + (i * 70)) + 'px';
+                    box.style.right = (10 + (i * 60)) + 'px';
+                    box.style.zIndex = '2147483645';
+                    box.style.pointerEvents = 'none';
+                    box.style.fontSize = '8px';
+                    box.style.color = 'lime';
+                    box.style.padding = '4px';
+                    box.innerHTML = '🎯 ENEMY ' + (i+1);
+                    document.body.appendChild(box);
+                    setTimeout(() => box.remove(), 4000);
+                }
+                info.innerHTML = '👁️ ESP AKTIF (4 DETIK SIMULASI) 👁️';
+                espActive = true;
+                setTimeout(() => { espActive = false; info.innerHTML = '⚡ ESP HABIS, TEKAN LAGI ⚡'; }, 4000);
+            }
+        });
+        
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            aimRing?.remove();
+            aimbotActive = false;
+            info.innerHTML = '✅ SEMUA RESET ✅ OVERLAY TETAP AKTIF';
+            info.style.color = '#0f0';
+            // hapus semua esp sisa
+            document.querySelectorAll('.esp-box').forEach(el => el.remove());
+        });
+        
+        // BIAR OVERLAY KELIHATAN DI ATAS FF 
+        console.log('🔥 QUANTUM_Ω OVERLAY SIAP TEMBUS SEMUA APLIKASI 🔥');
+        // efek pulsasi crosshair
+        const cross = document.querySelector('.overlay-crosshair');
+        setInterval(() => {
+            if (aimbotActive) {
+                cross.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                cross.style.backgroundColor = 'lime';
+                setTimeout(() => {
+                    cross.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cross.style.backgroundColor = 'red';
+                }, 150);
+            }
+        }, 600);
+    </script>
 </body>
 </html>
