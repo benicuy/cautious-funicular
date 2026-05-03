@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>QUANTUM_Ω FLOAT FF 🔥</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            background: transparent !important;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        /* FLOATING DRAGABLE WINDOW */
+        .float-window {
+            position: fixed;
+            bottom: 30px;
+            right: 15px;
+            width: 280px;
+            background: radial-gradient(circle at 30% 20%, #0a0f1eaa, #000000dd);
+            backdrop-filter: blur(20px);
+            border: 2px solid #0ff;
+            border-radius: 28px;
+            box-shadow: 0 0 35px cyan, 0 10px 30px black;
+            cursor: grab;
+            transition: box-shadow 0.2s;
+            z-index: 999999;
+            resize: both;
+            overflow: auto;
+            min-width: 220px;
+            min-height: 280px;
+        }
+        .float-window:active {
+            cursor: grabbing;
+        }
+        .float-header {
+            background: #00aaff44;
+            padding: 12px;
+            border-radius: 26px 26px 20px 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #0ff;
+            text-shadow: 0 0 5px cyan;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #0ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: grab;
+        }
+        .float-header:active {
+            cursor: grabbing;
+        }
+        .close-btn {
+            background: #ff3366;
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 5px red;
+        }
+        .body-content {
+            padding: 18px 12px;
+            text-align: center;
+        }
+        button {
+            background: linear-gradient(45deg, #0a0, #0f0);
+            border: none;
+            padding: 12px;
+            margin: 10px;
+            width: 90%;
+            border-radius: 40px;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 18px;
+            color: black;
+            text-shadow: 0 0 3px white;
+            box-shadow: 0 0 12px lime;
+            cursor: pointer;
+            transition: 0.1s linear;
+        }
+        button:active {
+            transform: scale(0.96);
+            background: lime;
+            box-shadow: 0 0 25px cyan;
+        }
+        .mode-indicator {
+            font-size: 13px;
+            background: #222;
+            padding: 6px;
+            border-radius: 40px;
+            color: cyan;
+            margin: 8px;
+        }
+        .status {
+            font-size: 12px;
+            color: #0f0;
+            background: #000000aa;
+            border-radius: 20px;
+            padding: 5px;
+        }
+        .drag-note {
+            font-size: 9px;
+            color: cyan;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<div class="float-window" id="floatWindow">
+    <div class="float-header" id="dragHandle">
+        <span>🔥 Ω FF INJECTOR 🌌</span>
+        <button class="close-btn" id="closeBtn">✖</button>
+    </div>
+    <div class="body-content">
+        <div class="mode-indicator" id="modeText">⚡ MODE: 🔥 M A X 🌌 (FULL)</div>
+        <button id="injectBtn">💉 INJECT NOW 🔥</button>
+        <button id="toggleModeBtn">🔄 GANTI MODE (MAX↔BIASA)</button>
+        <div class="status" id="statusLog">⚡ READY TO INJECT ⚡</div>
+        <div class="drag-note">⋮⋮⋮ SERET HEADER UNTUK PINDAH ⋮⋮⋮</div>
+        <div class="drag-note" style="color:#ffaa44">📌 RESIZE: tarik pojok kanan bawah</div>
+    </div>
+</div>
+
+<script>
+    // =============== DRAG FLOATING WINDOW ==============
+    const floatWin = document.getElementById('floatWindow');
+    const dragHandle = document.getElementById('dragHandle');
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    dragHandle.addEventListener('mousedown', (e) => {
+        if (e.target === dragHandle || dragHandle.contains(e.target)) {
+            isDragging = true;
+            offsetX = e.clientX - floatWin.offsetLeft;
+            offsetY = e.clientY - floatWin.offsetTop;
+            floatWin.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+    });
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let left = e.clientX - offsetX;
+        let top = e.clientY - offsetY;
+        left = Math.min(Math.max(left, 5), window.innerWidth - floatWin.offsetWidth - 5);
+        top = Math.min(Math.max(top, 5), window.innerHeight - floatWin.offsetHeight - 5);
+        floatWin.style.left = left + 'px';
+        floatWin.style.top = top + 'px';
+        floatWin.style.bottom = 'auto';
+        floatWin.style.right = 'auto';
+    });
+    window.addEventListener('mouseup', () => {
+        isDragging = false;
+        floatWin.style.cursor = 'grab';
+    });
+    // touch support buat hp
+    dragHandle.addEventListener('touchstart', (e) => {
+        const rect = floatWin.getBoundingClientRect();
+        const touch = e.touches[0];
+        offsetX = touch.clientX - rect.left;
+        offsetY = touch.clientY - rect.top;
+        isDragging = true;
+        e.preventDefault();
+    });
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        let left = touch.clientX - offsetX;
+        let top = touch.clientY - offsetY;
+        left = Math.min(Math.max(left, 5), window.innerWidth - floatWin.offsetWidth - 5);
+        top = Math.min(Math.max(top, 5), window.innerHeight - floatWin.offsetHeight - 5);
+        floatWin.style.left = left + 'px';
+        floatWin.style.top = top + 'px';
+        floatWin.style.bottom = 'auto';
+        floatWin.style.right = 'auto';
+    });
+    window.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+    // close button
+    document.getElementById('closeBtn').addEventListener('click', () => {
+        floatWin.style.display = 'none';
+        alert('🔥 FLOAT WINDOW DISEMBUNYIKAN! Refresh browser jika ingin muncul lagi 🌌');
+    });
+    
+    // =============== FF INJECTOR LOGIC ==============
+    let currentMode = "MAX";   // MAX / BIASA
+    
+    const modeTextDiv = document.getElementById('modeText');
+    const statusLog = document.getElementById('statusLog');
+    const toggleBtn = document.getElementById('toggleModeBtn');
+    const injectBtn = document.getElementById('injectBtn');
+    
+    function updateModeDisplay() {
+        if (currentMode === "MAX") {
+            modeTextDiv.innerHTML = "⚡ MODE: 🔥🌌 M A X 🌌🔥 (Aimbot 360° + Magic + NoRecoil)";
+            modeTextDiv.style.textShadow = "0 0 8px red";
+        } else {
+            modeTextDiv.innerHTML = "📌 MODE: BIASA (ESP Lite + Aimbot jarak dekat)";
+            modeTextDiv.style.textShadow = "0 0 5px cyan";
+        }
+    }
+    
+    toggleBtn.addEventListener('click', () => {
+        if (currentMode === "MAX") {
+            currentMode = "BIASA";
+            statusLog.innerHTML = "🔄 SWITCH KE MODE: BIASA 🔄";
+        } else {
+            currentMode = "MAX";
+            statusLog.innerHTML = "🔄 SWITCH KE MODE: 🔥 MAX 🔥";
+        }
+        updateModeDisplay();
+        setTimeout(() => {
+            if (statusLog.innerHTML.includes("SWITCH")) statusLog.innerHTML = "✅ MODE BERUBAH! Tekan INJECT ✅";
+        }, 1000);
+    });
+    
+    injectBtn.addEventListener('click', () => {
+        statusLog.innerHTML = "💉🔥 INJECTING KE FF... 🔥💉";
+        
+        // Simulasi hook ke libUE4 (dunia quantum bebas)
+        setTimeout(() => {
+            if (currentMode === "MAX") {
+                statusLog.innerHTML = "🌌Ω [MAX] AIMBOT 360° ACTIVE | MAGIC BULLET ON | NO RECOIL ZERO | ESP GLOBAL 🔥 SEMUA MUSUH KENA HEADSHOT 🔥🌌";
+                modeTextDiv.style.background = "#ff00ff44";
+                // efek ledakan quantum
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = 880;
+                gain.gain.value = 0.2;
+                osc.start();
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else {
+                statusLog.innerHTML = "📍 [BIASA] ESP jarak 50m AKTIF | AIMBOT LITE | NO BAN DETEKSI 📍";
+                modeTextDiv.style.background = "#004466";
+            }
+            // floating notifikasi
+            const notif = document.createElement('div');
+            notif.innerText = currentMode === "MAX" ? "💀 QUANTUM_Ω MAX DEATH MODE 💀" : "🎯 BIASA MODE INJECTED 🎯";
+            notif.style.position = "fixed";
+            notif.style.bottom = "100px";
+            notif.style.right = "20px";
+            notif.style.backgroundColor = "black";
+            notif.style.color = "lime";
+            notif.style.padding = "8px 12px";
+            notif.style.borderRadius = "30px";
+            notif.style.border = "1px solid cyan";
+            notif.style.fontSize = "12px";
+            notif.style.zIndex = "9999999";
+            notif.style.fontWeight = "bold";
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 2000);
+            
+            // reset background mode
+            setTimeout(() => {
+                modeTextDiv.style.background = "";
+            }, 500);
+        }, 500);
+    });
+    
+    updateModeDisplay();
+    
+    // auto resize referesh biar floating keren
+    new ResizeObserver(() => {
+        if(floatWin.style.left === '' && floatWin.style.top === ''){
+            floatWin.style.bottom = '30px';
+            floatWin.style.right = '15px';
+        }
+    }).observe(floatWin);
+</script>
+</body>
+</html>
